@@ -33,7 +33,7 @@
 
   <Requirements>
     <Sets>
-      <Set Name="Mailbox" MinVersion="1.12"/>
+      <Set Name="Mailbox" MinVersion="1.13"/>
     </Sets>
   </Requirements>
 
@@ -59,7 +59,7 @@
     xsi:type="VersionOverridesV1_1">
 
     <Requirements>
-      <bt:Sets DefaultMinVersion="1.12">
+      <bt:Sets DefaultMinVersion="1.13">
         <bt:Set Name="Mailbox"/>
       </bt:Sets>
     </Requirements>
@@ -71,6 +71,18 @@
         <DesktopFormFactor>
 
           <FunctionFile resid="Commands.Url"/>
+
+          <Runtimes>
+
+            <Runtime resid="WebViewRuntime.Url">
+
+              <Override
+                type="javascript"
+                resid="JSRuntime.Url"/>
+
+            </Runtime>
+
+          </Runtimes>
 
           <ExtensionPoint xsi:type="LaunchEvent">
 
@@ -115,6 +127,14 @@
 
         <bt:Url
           id="Commands.Url"
+          DefaultValue="https://waychance.github.io/outlook-warning/commands.html"/>
+
+        <bt:Url
+          id="JSRuntime.Url"
+          DefaultValue="https://waychance.github.io/outlook-warning/commands.js"/>
+
+        <bt:Url
+          id="WebViewRuntime.Url"
           DefaultValue="https://waychance.github.io/outlook-warning/commands.html"/>
 
       </bt:Urls>
