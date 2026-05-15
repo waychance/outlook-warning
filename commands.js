@@ -17,7 +17,7 @@ function onItemSend(event) {
     if (result.status === Office.AsyncResultStatus.Succeeded) {
       var recipients = result.value;
       var hasExternal = false;
-      var internalDomain = "@sg";
+      var internalDomain = "@sg.moomoo.com";
 
       for (var i = 0; i < recipients.length; i++) {
         if (recipients[i].emailAddress.toLowerCase().indexOf(internalDomain) === -1) {
@@ -27,7 +27,7 @@ function onItemSend(event) {
       }
 
       if (hasExternal) {
-        externalConfirmed = true; // Next send will go through
+        externalConfirmed = true;
         event.completed({
           allowEvent: false,
           errorMessage: "⚠️ External recipient detected! Click SEND again to confirm."
