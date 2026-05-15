@@ -1,2 +1,40 @@
-Office.onReady(function(){}),Office.actions.associate("onMessageSendHandler",function(e){var c=["@sg.moomoo.com"],t=Office.context.mailbox.item;t.to.getAsync(function(n){t.cc.getAsync(function(s){t.bcc.getAsync(function(t){var a=[];n.status===Office.AsyncResultStatus.Succeeded&&(a=a.concat(n.value)),s.status===Office.AsyncResultStatus.Succeeded&&(a=a.concat(s.value)),t.status===Office.AsyncResultStatus.Succeeded&&(a=a.concat(t.value));var o=!1;a.forEach(function(e){var t=e.emailAddress.toLowerCase(),n=!1;c.forEach(function(e){t.endsWith(e)&&(n=!0)}),n||(o=!0)}),o?e.completed({allowEvent:!1,errorMessage:"External recipient detected. Please review recipients before sending."}):e.completed({allowEvent:!0})})})})});
-//# sourceMappingURL=commands.js.map
+var externalConfirmed = false;
+
+Office.onReady(function () {
+  Office.actions.associate("onMessageSend", onItemSend);
+});
+
+function onItemSend(event) {
+  if (externalConfirmed) {
+    externalConfirmed = false;
+    event.completed({ allowEvent: true });
+    return;
+  }
+
+  var item = Office.context.mailbox.item;
+
+  item.to.getAsync(function (result) {
+    if (result.status === Office.AsyncResultStatus.Succeeded) {
+      var recipients = result.value;
+      var hasExternal = false;
+      var internalDomain = "@sg";
+
+      for (var i = 0; i < recipients.length; i++) {
+        if (recipients[i].emailAddress.toLowerCase().indexOf(internalDomain) === -1) {
+          hasExternal = true;
+          break;
+        }
+      }
+
+      if (hasExternal) {
+        externalConfirmed = true; // Next send will go through
+        event.completed({
+          allowEvent: false,
+          errorMessage: "⚠️ External recipient detected! Click SEND again to confirm."
+        });
+      } else {
+        event.completed({ allowEvent: true });
+      }
+    }
+  });
+}
